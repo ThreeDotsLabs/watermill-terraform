@@ -67,3 +67,4 @@ jobs:
         run: terraform apply out.tfplan
         env:
           GITHUB_TOKEN: ${{ secrets.TERRAFORM_GITHUB_TOKEN }}
+          GOOGLE_APPLICATION_CREDENTIALS: credentials.json
