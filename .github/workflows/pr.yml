@@ -82,6 +82,8 @@ jobs:
             
             </details>
             
+            *Pushed by @${{ github.actor }}*`;
+
             if (botComment) {
               github.rest.issues.updateComment({
                 owner: context.repo.owner,
