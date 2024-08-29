@@ -34,9 +34,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.TERRAFORM_GITHUB_TOKEN }}
           GOOGLE_APPLICATION_CREDENTIALS: credentials.json
 
-      - run: cat plan_errors
-        if: steps.plan.outcome != 'success'
-
       - run: terraform show -no-color out.tfplan | tee plan
 
       - uses: actions/github-script@v7

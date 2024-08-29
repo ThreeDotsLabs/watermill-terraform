@@ -44,8 +44,9 @@ resource "github_repository_file" "readme" {
   branch     = github_branch_default.master.branch
   file       = "README.md"
   content = templatefile("${path.module}/README.template.md", {
-    id   = var.id
-    name = var.name
+    id      = var.id
+    name    = var.name
+    details = var.details
   })
   commit_message      = "Update README.md (by Terraform)"
   overwrite_on_create = true
