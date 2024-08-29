@@ -1,0 +1,62 @@
+name: master
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - master
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.5
+          terraform_wrapper: false
+
+      - id: fmt
+        run: terraform fmt -check
+        continue-on-error: true
+
+      - id: init
+        run: terraform init"
+
+      - id: validate
+        run: terraform validate -no-color | tee validation
+
+      - id: plan
+        run: terraform plan -out=out.tfplan -no-color -input=false 2> plan_errors
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.TERRAFORM_GITHUB_TOKEN }}
+
+      - run: |
+          TMP_OUTPUT=$(terraform show -no-color out.tfplan)
+          FORMATTED_OUTPUT="${TMP_OUTPUT:0:65536}"
+          echo "$FORMATTED_OUTPUT" | tee output
+
+      - id: output
+        run: |
+          {
+            echo 'PLAN_OUTPUT<<EOF'
+            echo '```'
+            sed -n '/─/,$p' output | sed '1d'
+            echo '```'
+            echo EOF
+          } >> "$GITHUB_OUTPUT"
+
+      - name: Approve
+        uses: trstringer/manual-approval@v1.9.1
+        timeout-minutes: 5
+        with:
+          issue-title: "Terraform changes require approval"
+          secret: ${{ github.TOKEN }}
+          approvers: m110,roblaszczak
+          issue-body: ${{ steps.output.outputs.PLAN_OUTPUT }}
+          minimum-approvals: 1
+
+      - name: Apply
+        run: terraform apply out.tfplan
+        env:
+          GITHUB_TOKEN: ${{ secrets.TERRAFORM_GITHUB_TOKEN }}
