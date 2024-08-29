@@ -15,10 +15,14 @@ jobs:
         run: terraform fmt -check
         continue-on-error: true
 
+      - run: echo -n "$CREDENTIALS" > /root/credentials.json
+        env:
+          CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+
       - id: init
         run: terraform init
         env:
-          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+          GOOGLE_APPLICATION_CREDENTIALS: /root/credentials.json
 
       - id: validate
         run: terraform validate -no-color | tee validation
