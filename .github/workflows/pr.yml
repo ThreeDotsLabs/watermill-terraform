@@ -17,6 +17,8 @@ jobs:
 
       - id: init
         run: terraform init
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
 
       - id: validate
         run: terraform validate -no-color | tee validation
