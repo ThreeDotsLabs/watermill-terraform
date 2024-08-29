@@ -60,9 +60,9 @@ jobs:
               return comment.user.type === 'Bot' && comment.body.includes('Terraform Format and Style')
             })
             
-            const output = `#### Terraform Format and Style 🖌\`${process.env.FMT_OUTPUT}\`
-            #### Terraform Initialization ⚙️\`${process.env.INIT_OUTPUT}\`
-            #### Terraform Validation 🤖\`${process.env.VALIDATE_OUTPUT}\`
+            const output = `#### Terraform Format and Style 🖌 \`${process.env.FMT_OUTPUT}\`
+            #### Terraform Initialization ⚙️ \`${process.env.INIT_OUTPUT}\`
+            #### Terraform Validation 🤖 \`${process.env.VALIDATE_OUTPUT}\`
             <details><summary>Validation Output</summary>
             
             \`\`\`\n
@@ -71,7 +71,7 @@ jobs:
             
             </details>
             
-            #### Terraform Plan 📖\`${process.env.PLAN_OUTPUT}\`
+            #### Terraform Plan 📖 \`${process.env.PLAN_OUTPUT}\`
             
             <details><summary>Show Plan</summary>
             
