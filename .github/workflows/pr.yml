@@ -16,7 +16,7 @@ jobs:
         continue-on-error: true
 
       - id: init
-        run: terraform init"
+        run: terraform init
 
       - id: validate
         run: terraform validate -no-color | tee validation
