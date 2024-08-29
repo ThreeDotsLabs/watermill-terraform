@@ -15,12 +15,18 @@ jobs:
           terraform_version: 1.9.5
           terraform_wrapper: false
 
+      - run: echo -n "$CREDENTIALS" > credentials.json
+        env:
+          CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+
       - id: fmt
         run: terraform fmt -check
         continue-on-error: true
 
       - id: init
         run: terraform init
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: credentials.json
 
       - id: validate
         run: terraform validate -no-color | tee validation
@@ -30,6 +36,7 @@ jobs:
         continue-on-error: true
         env:
           GITHUB_TOKEN: ${{ secrets.TERRAFORM_GITHUB_TOKEN }}
+          GOOGLE_APPLICATION_CREDENTIALS: credentials.json
 
       - run: |
           TMP_OUTPUT=$(terraform show -no-color out.tfplan)
