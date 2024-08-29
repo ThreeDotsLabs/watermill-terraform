@@ -33,6 +33,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.TERRAFORM_GITHUB_TOKEN }}
 
+      - run: cat plan_errors
+
       - run: terraform show -no-color out.tfplan | tee plan
 
       - uses: actions/github-script@v7
