@@ -48,7 +48,7 @@ jobs:
           {
             echo 'PLAN_OUTPUT<<EOF'
             echo '```'
-            sed -n '/─/,$p' output | sed '1d'
+            sed '1d' output
             echo '```'
             echo EOF
           } >> "$GITHUB_OUTPUT"
