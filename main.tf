@@ -14,27 +14,6 @@ provider "github" {
   owner = "ThreeDotsLabs"
 }
 
-resource "github_repository" "watermill" {
-  name        = "watermill"
-  description = "Building event-driven applications the easy way in Go."
-
-  homepage_url = "https://watermill.io"
-
-  has_issues    = true
-  has_downloads = true
-
-  allow_squash_merge = true
-  allow_merge_commit = false
-  allow_rebase_merge = false
-
-  merge_commit_message        = "PR_TITLE"
-  merge_commit_title          = "MERGE_MESSAGE"
-  squash_merge_commit_message = "COMMIT_MESSAGES"
-  squash_merge_commit_title   = "COMMIT_OR_PR_TITLE"
-
-  vulnerability_alerts = true
-}
-
 module "pubsub_repo_amazonsqs" {
   source = "./modules/pubsub_repo"
 
