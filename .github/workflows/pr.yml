@@ -1,0 +1,104 @@
+name: pr
+on:
+  pull_request:
+jobs:
+  plan:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.9.5
+          terraform_wrapper: false
+
+      - run: echo -n "$CREDENTIALS" > credentials.json
+        env:
+          CREDENTIALS: ${{ secrets.GOOGLE_APPLICATION_CREDENTIALS }}
+
+      - id: fmt
+        run: terraform fmt -check
+        continue-on-error: true
+
+      - id: init
+        run: terraform init
+        env:
+          GOOGLE_APPLICATION_CREDENTIALS: credentials.json
+
+      - id: validate
+        run: terraform validate -no-color | tee validation
+
+      - id: plan
+        run: terraform plan -out=out.tfplan -no-color -input=false 2> plan_errors
+        continue-on-error: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.TERRAFORM_GITHUB_TOKEN }}
+          GOOGLE_APPLICATION_CREDENTIALS: credentials.json
+
+      - run: terraform show -no-color out.tfplan | tee plan
+
+      - uses: actions/github-script@v7
+        env:
+          FMT_OUTPUT: ${{ steps.fmt.outcome }}
+          INIT_OUTPUT: ${{ steps.init.outcome }}
+          VALIDATE_OUTPUT: ${{ steps.validate.outcome }}
+          PLAN_OUTPUT: ${{ steps.plan.outcome }}
+        with:
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          script: |
+            const fs = require("fs");
+            
+            const validation = fs.readFileSync("validation", "utf8");
+            const plan = fs.readFileSync("plan", "utf8");
+            const plan_errors = fs.readFileSync("plan_errors", "utf8");
+
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            })
+            const botComment = comments.find(comment => {
+              return comment.user.type === 'Bot' && comment.body.includes('Terraform Format and Style')
+            })
+            
+            const output = `#### Terraform Format and Style 🖌 \`${process.env.FMT_OUTPUT}\`
+            #### Terraform Initialization ⚙️ \`${process.env.INIT_OUTPUT}\`
+            #### Terraform Validation 🤖 \`${process.env.VALIDATE_OUTPUT}\`
+            <details><summary>Validation Output</summary>
+            
+            \`\`\`\n
+            ${ validation }
+            \`\`\`
+            
+            </details>
+            
+            #### Terraform Plan 📖 \`${process.env.PLAN_OUTPUT}\`
+            
+            <details><summary>Show Plan</summary>
+            
+            \`\`\`\n
+            ${ plan }
+            ${ plan_errors }
+            \`\`\`
+            
+            </details>
+            
+            *Pushed by @${{ github.actor }}*`;
+
+            if (botComment) {
+              github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: botComment.id,
+                body: output
+              })
+            } else {
+              github.rest.issues.createComment({
+                issue_number: context.issue.number,
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                body: output
+              })
+            }
+
+      - if: steps.plan.outcome != 'success' || steps.fmt.outcome != 'success'
+        run: exit 1
