@@ -7,7 +7,7 @@
 This is Pub/Sub for the [Watermill](https://watermill.io/) project.
 ${details}
 
-## Watermill
+See [DEVELOPMENT.md](./DEVELOPMENT.md) for more information about running and testing.
 
 Watermill is a Go library for working efficiently with message streams. It is intended
 for building event driven applications, enabling event sourcing, RPC over messages,
