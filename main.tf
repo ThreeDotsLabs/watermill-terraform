@@ -14,10 +14,10 @@ provider "github" {
   owner = "ThreeDotsLabs"
 }
 
-module "pubsub_repo_amazonsqs" {
+module "pubsub_repo_aws" {
   source = "./modules/pubsub_repo"
 
-  id   = "amazonsqs"
+  id   = "aws"
   name = "Amazon SQS/SNS"
 
   details = "It uses the [Amazon SQS](https://aws.amazon.com/sqs/) and [Amazon SNS](https://aws.amazon.com/sns/) services."
