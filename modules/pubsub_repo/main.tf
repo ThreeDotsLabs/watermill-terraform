@@ -51,3 +51,16 @@ resource "github_repository_file" "readme" {
   commit_message      = "Update README.md (by Terraform)"
   overwrite_on_create = true
 }
+
+resource "github_repository_file" "pull_request_template" {
+  repository = github_repository.repo.name
+  branch     = github_branch_default.master.branch
+  file       = ".github/pull_request_template.md"
+  content = templatefile("${path.module}/pull_request_template.md", {
+    id      = var.id
+    name    = var.name
+    details = var.details
+  })
+  commit_message      = "Update .github/pull_request_template.md (by Terraform)"
+  overwrite_on_create = true
+}
