@@ -103,3 +103,10 @@ module "pubsub_repo_sql" {
   id   = "sql"
   name = "SQL (Postgres/MySQL)"
 }
+
+module "pubsub_repo_sqlite" {
+  source = "./modules/pubsub_repo"
+
+  id   = "sqlite"
+  name = "SQLite"
+}
