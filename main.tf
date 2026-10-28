@@ -109,4 +109,14 @@ module "pubsub_repo_sqlite" {
 
   id   = "sqlite"
   name = "SQLite"
+
+  details = chomp(<<-EOT
+    The implementation provides two CGO-free driver variants optimized for different use cases.
+
+    **Beta Version Warning: this Pub/Sub is stable, but it has not been widely tested in production environments. It may be sensitive to certain edge cases and combinations of configuration parameters.**
+
+    1. ModernC [![Go Reference](https://pkg.go.dev/badge/github.com/ThreeDotsLabs/watermill.svg)](https://pkg.go.dev/github.com/ThreeDotsLabs/watermill-sqlite/wmsqlitemodernc)
+    2. ZombieZen [![Go Reference](https://pkg.go.dev/badge/github.com/ThreeDotsLabs/watermill.svg)](https://pkg.go.dev/github.com/ThreeDotsLabs/watermill-sqlite/wmsqlitezombiezen)
+    EOT
+  )
 }
