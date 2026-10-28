@@ -17,10 +17,9 @@ resource "github_repository" "repo" {
 
   homepage_url = "https://watermill.io/pubsubs/${var.id}/"
 
-  has_downloads = true
-  has_issues    = false
-  has_projects  = false
-  has_wiki      = false
+  has_issues   = false
+  has_projects = false
+  has_wiki     = false
 
   allow_squash_merge = true
   allow_merge_commit = false
