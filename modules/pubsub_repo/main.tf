@@ -40,8 +40,6 @@ resource "github_branch_default" "master" {
 }
 
 resource "github_repository_file" "readme" {
-  count = var.manage_readme ? 1 : 0
-
   repository = github_repository.repo.name
   branch     = github_branch_default.master.branch
   file       = "README.md"
@@ -52,11 +50,6 @@ resource "github_repository_file" "readme" {
   })
   commit_message      = "Update README.md (by Terraform)"
   overwrite_on_create = true
-}
-
-moved {
-  from = github_repository_file.readme
-  to   = github_repository_file.readme[0]
 }
 
 resource "github_repository_file" "pull_request_template" {
