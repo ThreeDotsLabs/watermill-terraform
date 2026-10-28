@@ -109,4 +109,7 @@ module "pubsub_repo_sqlite" {
 
   id   = "sqlite"
   name = "SQLite"
+
+  # README is maintained by hand in the repository
+  manage_readme = false
 }

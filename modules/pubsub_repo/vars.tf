@@ -6,3 +6,6 @@ variable "default_branch" {
 variable "details" {
   default = ""
 }
+variable "manage_readme" {
+  default = true
+}
